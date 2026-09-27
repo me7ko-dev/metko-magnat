@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "metko-magnat",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["test/serve.mjs"],
+      "port": 5190
+    }
+  ]
+}
