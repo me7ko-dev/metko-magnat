@@ -11,6 +11,12 @@
   - Прозорецът зарежда index.html от app.asar през file://, само един екземпляр, F11 = цял екран.
   - Записът на .exe-то е отделен от браузъра (%APPDATA%\Метко Магнат). Без интернет шрифтовете падат на резервните.
   - Проверка: `PW="$(npm root -g)/playwright" node test/exe.mjs` → test/out/exe.png. Иконите: `npm run icons` (Playwright + Chrome).
+- Android: `npm run apk` → `release/MetkoMagnat.apk`, качва се като asset в GitHub Release (`gh release create vX.Y.Z release/MetkoMagnat.apk`).
+  - Без Gradle: aapt2 + javac (Tools/jdk17, `-encoding UTF-8`) + d8 + `aapt add` + zipalign + apksigner (Tools/android-sdk, build-tools 35.0.1, android-35).
+  - Пакет `uk.metko.magnat`, minSdk 24, targetSdk 35. WebView зарежда file:///android_asset/index.html; отстъпи за системните ленти (Android 11+).
+  - Ключ: `Tools/keystores/metko-magnat.keystore`, паролата в `metko-magnat-keystore-parola.txt` до него — НЕ в GitHub. Без него нова версия не се инсталира върху старата.
+  - versionCode = major*10000+minor*100+patch от package.json → вдигай `version` при всяка нова версия.
+  - Не е пускан на истински телефон или емулатор от Claude (няма свързан телефон, няма емулатор) — проверен с aapt2 dump, zipalign -c, apksigner verify.
 - Локално в браузъра: `index.html` с двоен клик (след промяна в game.html: `npm run page`).
 - Проверка в браузъра: `node test/serve.mjs` (порт 5190); в Claude Desktop има запис „metko-magnat“ в `C:\.claude\launch.json`.
 - Тест в конзолата: `window.__magnat.set(MM.save(state), {tab:'biz'})` зарежда готов прогрес, `window.__magnat.state()` дава състоянието.
