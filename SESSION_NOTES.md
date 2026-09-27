@@ -3,9 +3,15 @@
 Бърза idle игра (като AdVenture Capitalist, но по-бърза). Само на български, парите в €. Потребителят не пише код и не чете английски.
 
 ## Пускане
-- GitHub (публично): https://github.com/me7ko-dev/metko-magnat — Pages: https://me7ko-dev.github.io/metko-magnat/ (клон main, корен). След промяна: `sh build.sh` → commit → `git push` (Pages се обновява само за 1–2 мин).
+- GitHub (публично): https://github.com/me7ko-dev/metko-magnat — Pages: https://me7ko-dev.github.io/metko-magnat/ (клон main, корен). След промяна: `npm run page` → commit → `git push` (Pages се обновява само за 1–2 мин).
 - Artifact (частен): https://claude.ai/artifact/VchcvHUQhobaNZviu6FxSM — обновява се с повторно публикуване на `game.html` + `files: {"engine.js": ...}` (url горе).
-- Локално: `index.html` с двоен клик (след промяна в game.html: `sh build.sh`).
+- Windows: иконата „Метко Магнат“ на работния плот → `release/MetkoMagnat-win32-x64/MetkoMagnat.exe`. Нова версия: `npm run exe` (прави и index.html).
+  - Като при Big Burger: electron.exe от `node_modules/electron/dist` (Electron 44.4.5) само се преименува — същият hash като BigBurger.exe, затова Smart App Control го пуска.
+  - Бинарникът на Electron: `node node_modules/electron/install.js` (npm не пуска postinstall скриптове).
+  - Прозорецът зарежда index.html от app.asar през file://, само един екземпляр, F11 = цял екран.
+  - Записът на .exe-то е отделен от браузъра (%APPDATA%\Метко Магнат). Без интернет шрифтовете падат на резервните.
+  - Проверка: `PW="$(npm root -g)/playwright" node test/exe.mjs` → test/out/exe.png. Иконите: `npm run icons` (Playwright + Chrome).
+- Локално в браузъра: `index.html` с двоен клик (след промяна в game.html: `npm run page`).
 - Проверка в браузъра: `node test/serve.mjs` (порт 5190); в Claude Desktop има запис „metko-magnat“ в `C:\.claude\launch.json`.
 - Тест в конзолата: `window.__magnat.set(MM.save(state), {tab:'biz'})` зарежда готов прогрес, `window.__magnat.state()` дава състоянието.
 - Запис в localStorage: `metko-magnat-v1` (игра), `metko-magnat-opt` (звук, раздел, режим на купуване, подсказки).
@@ -23,5 +29,5 @@
 - Проверено в браузъра: компютър 1280×800 и телефон 375×812, тъмна тема, продажба на империята, офлайн прозорец, без грешки в конзолата.
 
 ## Идеи за после
-- PWA за телефона, Windows .exe (като Big Burger Business).
+- PWA за телефона (офлайн), вградени шрифтове за .exe без интернет.
 - Събития по време (напр. „Черен петък“), втори свят след Галактическата империя.

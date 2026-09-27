@@ -1,0 +1,19 @@
+{
+  "name": "metko-magnat",
+  "productName": "Метко Магнат",
+  "version": "1.0.0",
+  "description": "Бърза idle игра: от лимонада до галактическа империя",
+  "private": true,
+  "scripts": {
+    "page": "node page.mjs",
+    "sim": "node test/sim.mjs 300",
+    "serve": "node test/serve.mjs",
+    "icons": "node desktop/icons.mjs",
+    "desktop": "npm run page && electron desktop/main.cjs",
+    "exe": "npm run page && node desktop/build.mjs"
+  },
+  "devDependencies": {
+    "@electron/asar": "^4.3.0",
+    "electron": "44.4.5"
+  }
+}
