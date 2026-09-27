@@ -1,3 +1,4 @@
 node_modules/
 test/sim_out.txt
 release/
+test/out/
