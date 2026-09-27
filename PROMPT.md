@@ -2,7 +2,8 @@
 
 Това е промптът, по който е направена играта. Може да се даде на Claude, за да продължи или да направи подобна игра.
 
-**Играй (частен линк):** https://claude.ai/artifact/VchcvHUQhobaNZviu6FxSM
+**Играй:** https://me7ko-dev.github.io/metko-magnat/
+**Частно копие (Artifact):** https://claude.ai/artifact/VchcvHUQhobaNZviu6FxSM
 **Папка:** `C:\Users\roika\Projects\metko-magnat`
 
 ---

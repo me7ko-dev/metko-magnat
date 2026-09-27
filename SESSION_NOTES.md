@@ -3,6 +3,7 @@
 Бърза idle игра (като AdVenture Capitalist, но по-бърза). Само на български, парите в €. Потребителят не пише код и не чете английски.
 
 ## Пускане
+- GitHub (публично): https://github.com/me7ko-dev/metko-magnat — Pages: https://me7ko-dev.github.io/metko-magnat/ (клон main, корен). След промяна: `sh build.sh` → commit → `git push` (Pages се обновява само за 1–2 мин).
 - Artifact (частен): https://claude.ai/artifact/VchcvHUQhobaNZviu6FxSM — обновява се с повторно публикуване на `game.html` + `files: {"engine.js": ...}` (url горе).
 - Локално: `index.html` с двоен клик (след промяна в game.html: `sh build.sh`).
 - Проверка в браузъра: `node test/serve.mjs` (порт 5190); в Claude Desktop има запис „metko-magnat“ в `C:\.claude\launch.json`.
@@ -22,6 +23,5 @@
 - Проверено в браузъра: компютър 1280×800 и телефон 375×812, тъмна тема, продажба на империята, офлайн прозорец, без грешки в конзолата.
 
 ## Идеи за после
-- GitHub репо + GitHub Pages (както Умник) — чака потребителя да каже.
 - PWA за телефона, Windows .exe (като Big Burger Business).
 - Събития по време (напр. „Черен петък“), втори свят след Галактическата империя.

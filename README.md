@@ -3,7 +3,10 @@
 Бърза IDLE игра за натрупване на пари: от будка за лимонада до галактическа империя.
 15 бизнеса, мениджъри, 224 подобрения, инвеститори (продажба на империята), диаманти, златни куфарчета, турбо и 117 постижения.
 
-- **Играй (частен линк):** https://claude.ai/artifact/VchcvHUQhobaNZviu6FxSM
+**Играй (телефон и компютър):** https://me7ko-dev.github.io/metko-magnat/
+
+- **Хранилище в GitHub:** https://github.com/me7ko-dev/metko-magnat
+- **Частно копие (Artifact):** https://claude.ai/artifact/VchcvHUQhobaNZviu6FxSM
 - **Папка на компютъра:** `C:\Users\roika\Projects\metko-magnat`
 - **Локално:** двоен клик на `index.html`
 
