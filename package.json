@@ -11,10 +11,14 @@
     "icons": "node desktop/icons.mjs",
     "desktop": "npm run page && electron desktop/main.cjs",
     "exe": "npm run page && node desktop/build.mjs",
-    "apk": "npm run page && node android/build.mjs"
+    "apk": "npm run page && node android/build.mjs",
+    "ios": "npm run page && node mobile/prepare.mjs && npx cap sync ios"
   },
   "devDependencies": {
     "@electron/asar": "^4.3.0",
-    "electron": "44.4.5"
+    "electron": "44.4.5",
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/ios": "^8.5.2"
   }
 }

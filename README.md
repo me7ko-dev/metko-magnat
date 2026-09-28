@@ -6,6 +6,7 @@
 **Играй (телефон и компютър):** https://me7ko-dev.github.io/metko-magnat/
 
 - **Android (APK):** https://github.com/me7ko-dev/metko-magnat/releases/latest/download/MetkoMagnat.apk — отвори линка от телефона, свали и инсталирай (разреши „Инсталиране от неизвестни източници“ за браузъра)
+- **iPhone:** свържи телефона с Mac-а (кабел или същата Wi-Fi мрежа), отключи го и пусни `bash mobile/ios-install.sh`. С безплатен Apple акаунт работи 7 дни — после пак пусни командата (прогресът се пази).
 - **Windows програма:** иконата „Метко Магнат“ на работния плот (`release\MetkoMagnat-win32-x64\MetkoMagnat.exe`)
 - **Хранилище в GitHub:** https://github.com/me7ko-dev/metko-magnat
 - **Частно копие (Artifact):** https://claude.ai/artifact/VchcvHUQhobaNZviu6FxSM

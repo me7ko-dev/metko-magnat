@@ -22,6 +22,16 @@
 - Тест в конзолата: `window.__magnat.set(MM.save(state), {tab:'biz'})` зарежда готов прогрес, `window.__magnat.state()` дава състоянието.
 - Запис в localStorage: `metko-magnat-v1` (игра), `metko-magnat-opt` (звук, раздел, режим на купуване, подсказки).
 
+## iPhone (2026-09-28, iPhone 13 Pro Max)
+- Capacitor 8 iOS (`ios/`, bundle `com.me7ko.magnat`, екип FUW9HQV9D7, безплатен акаунт → 7 дни): `bash mobile/ios-install.sh` (на Mac-а).
+- iOS платформата в Xcode е изтрита нарочно → `mobile/ios-plain.py` (без storyboard/xcassets, `-target App -sdk iphoneos`).
+  Иконата: `mobile/ios-icon-1024.png` (същата монета като `desktop/icons.mjs`, на цял квадрат).
+- Вертикално, часовникът горе се вижда (светли букви); `body::before` боядисва ивицата под него в цвета на горната лента.
+- `mobile/prepare.mjs`: www/ = index.html + engine.js + fonts/ — шрифтовете (Forum, IBM Plex Mono, Onest; OFL) са локални вместо Google Fonts.
+- В играта (важи и за уеб): без увеличаване при бързи докосвания (`touch-action: manipulation`), без маркиране по бутоните,
+  звукът тръгва пак след „прекъснат“, запис и при `pagehide`.
+- Проверено на телефона (конзола през devicectl): шрифтовете се зареждат, лентата е под изрезката (47 px), записът работи, без грешки.
+
 ## Баланс (робот `node test/sim.mjs 300`, без турбо и куфарчета)
 - 12 сек първи мениджър · 1 мин 1 млн € · 4 мин 1 млрд € · 14 мин 1 трлн €.
 - С продажби: всички 15 бизнеса за ~34 мин; след това всяко удвояване на инвеститорите отнема все повече (13 мин → 38 → 61 → 91 мин) — играта не „избухва“.

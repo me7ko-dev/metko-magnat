@@ -1,0 +1,11 @@
+{
+  "appId": "com.me7ko.magnat",
+  "appName": "Метко Магнат",
+  "webDir": "www",
+  "ios": {
+    "backgroundColor": "#113A28",
+    "contentInset": "never",
+    "allowsLinkPreview": false,
+    "preferredContentMode": "mobile"
+  }
+}

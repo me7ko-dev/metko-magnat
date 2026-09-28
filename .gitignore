@@ -3,3 +3,5 @@ test/sim_out.txt
 release/
 test/out/
 android/build/
+www/
+build.log
