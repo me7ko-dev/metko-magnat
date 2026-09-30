@@ -476,9 +476,11 @@ function serial() { return tx('ММ № ', 'MT No. ') + pad(Math.floor(S.st.star
 
 function $(id) { return document.getElementById(id); }
 function parse(str) { try { return str ? JSON.parse(str) : null; } catch (e) { return null; } }
-function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+// Записът: localStorage, а в CrazyGames — Data модулът на техния SDK (window.MM_STORE, същото API)
+function store() { return window.MM_STORE || localStorage; }
+function lsGet(k) { try { return store().getItem(k); } catch (e) { return null; } }
+function lsSet(k, v) { try { store().setItem(k, v); } catch (e) {} }
+function lsDel(k) { try { store().removeItem(k); } catch (e) {} }
 function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 function pad(n, w) { n = String(n); while (n.length < w) n = '0' + n; return n; }
 function eur(x) { return fmt(x) + ' €'; }
@@ -1160,6 +1162,7 @@ function start(data) {
   renderTicker();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { drawNote(); renderTicker(); });
   requestAnimationFrame(frame);
+  if (window.MM_CG) { try { window.MM_CG.game.gameplayStart(); } catch (e) {} }
 }
 
 // За тестове: window.__magnat.set(запис, настройки) зарежда готов прогрес
@@ -1177,7 +1180,15 @@ window.__magnat = {
 
 var hot = window.claude && window.claude.hot;
 if (hot && typeof hot.snapshot === 'function') { try { hot.snapshot(function () { return { s: S ? M.save(S) : null }; }); } catch (e) {} }
-if (hot && typeof hot.ready === 'function') hot.ready(start); else start((hot && hot.data) || {});
+// window.MM_BOOT (обещание) се задава само в пакета за CrazyGames: чакаме SDK-то най-много 6 сек
+function boot(fn) {
+  if (!window.MM_BOOT) return fn();
+  var done = false;
+  var go = function () { if (!done) { done = true; fn(); } };
+  window.MM_BOOT.then(go, go);
+  setTimeout(go, 6000);
+}
+if (hot && typeof hot.ready === 'function') hot.ready(start); else boot(function () { start((hot && hot.data) || {}); });
 })();
 </script>
 
