@@ -3,6 +3,11 @@
 (function (root) {
 'use strict';
 
+// Език: 'bg' или 'en' (задава се в страницата като window.MM_LANG; тестовете в Node ползват MM_LANG от средата)
+var LANG = (root && root.MM_LANG) || (typeof process !== 'undefined' && process.env && process.env.MM_LANG) || 'bg';
+if (LANG !== 'en') LANG = 'bg';
+var EN = LANG === 'en';
+
 var CFG = {
   startCash: 5,
   mgr0: 60,          // първият мениджър (лимонада)
@@ -22,8 +27,11 @@ var CFG = {
 };
 
 // ---------- числа ----------
-var SUF = ['', 'хил', 'млн', 'млрд', 'трлн', 'квдрлн', 'квнтлн'];
-var AZ = 'абвгдежзиклмнопрстуфхцчшщюя';
+var SUF = EN ? ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc'] : ['', 'хил', 'млн', 'млрд', 'трлн', 'квдрлн', 'квнтлн'];
+var AZ = EN ? 'abcdefghijklmnopqrstuvwxyz' : 'абвгдежзиклмнопрстуфхцчшщюя';
+var DEC = EN ? '.' : ',';
+// единици за време: сек, мин, ч, д
+var TU = EN ? ['s', 'min', 'h', 'd'] : ['сек', 'мин', 'ч', 'д'];
 function suffix(e3) {
   if (e3 < SUF.length) return SUF[e3];
   var k = e3 - SUF.length;
@@ -35,8 +43,8 @@ function fmt(x) {
   if (!isFinite(x)) return '∞';
   if (x < 0) return '-' + fmt(-x);
   if (x < 1000) {
-    if (x < 10) return trim0(x.toFixed(2)).replace('.', ',');
-    if (x < 100) return trim0(x.toFixed(1)).replace('.', ',');
+    if (x < 10) return trim0(x.toFixed(2)).replace('.', DEC);
+    if (x < 100) return trim0(x.toFixed(1)).replace('.', DEC);
     return String(Math.floor(x));
   }
   var e3 = Math.floor(Math.log10(x) / 3);
@@ -44,15 +52,20 @@ function fmt(x) {
   if (m < 1) { m *= 1000; e3--; }
   var str = m < 10 ? m.toFixed(2) : m < 100 ? m.toFixed(1) : m.toFixed(0);
   if (parseFloat(str) >= 1000) { e3++; str = (parseFloat(str) / 1000).toFixed(2); }
-  return str.replace('.', ',') + ' ' + suffix(e3);
+  return str.replace('.', DEC) + ' ' + suffix(e3);
 }
 function fmtTime(sec) {
   sec = Math.max(0, Math.round(sec));
-  if (sec < 60) return sec + ' сек';
+  if (sec < 60) return sec + ' ' + TU[0];
   var m = Math.floor(sec / 60), h = Math.floor(m / 60), d = Math.floor(h / 24);
-  if (d > 0) return d + ' д ' + (h % 24) + ' ч';
-  if (h > 0) return h + ' ч ' + (m % 60) + ' мин';
-  return m + ' мин' + (sec % 60 ? ' ' + (sec % 60) + ' сек' : '');
+  if (d > 0) return d + ' ' + TU[3] + ' ' + (h % 24) + ' ' + TU[2];
+  if (h > 0) return h + ' ' + TU[2] + ' ' + (m % 60) + ' ' + TU[1];
+  return m + ' ' + TU[1] + (sec % 60 ? ' ' + (sec % 60) + ' ' + TU[0] : '');
+}
+// Кратко време с десетична запетая под 10 секунди
+function fmtSec(sec) {
+  if (sec < 10) return sec.toFixed(1).replace('.', DEC) + ' ' + TU[0];
+  return fmtTime(sec);
 }
 
 // n име, i икона, c цена, g ръст на цената, t секунди на цикъл,
@@ -74,8 +87,16 @@ var BIZ = [
   { n: 'Колония на Марс', i: '🪐', c: 5.4e14, g: 1.07, t: 170, P: 28000, mn: 'Губернатор Рея' },
   { n: 'Галактическа империя', i: '🌌', c: 6.5e15, g: 1.07, t: 220, P: 56000, mn: 'Императорът Метко' }
 ];
+var BIZ_EN = [
+  ['Lemonade Stand', 'Lemonade Stands', 'Little Lily'], ['Bakery', 'Bakeries', 'Granny Pena'], ['Car Wash', 'Car Washes', 'Uncle Zhoro'],
+  ['Pizzeria', 'Pizzerias', 'Giuseppe'], ['Supermarket', 'Supermarkets', 'Mrs. Stoyanova'], ['Hotel', 'Hotels', 'Mitko the Doorman'],
+  ['Football Club', 'Football Clubs', 'Coach Itso'], ['Film Studio', 'Film Studios', 'Director Veso'], ['Bank', 'Banks', 'Mr. Zlatev'],
+  ['Oil Company', 'Oil Companies', 'Sheikh Ahmed'], ['AI Company', 'AI Companies', 'Robot M-3'], ['Space Agency', 'Space Agencies', 'Captain Nova'],
+  ['Asteroid Mine', 'Asteroid Mines', 'Kuzman the Miner'], ['Mars Colony', 'Mars Colonies', 'Governor Rhea'], ['Galactic Empire', 'Galactic Empires', 'Emperor Metko']
+];
 var NB = BIZ.length;
 BIZ.forEach(function (b, i) {
+  if (EN) { b.n = BIZ_EN[i][0]; b.pl = BIZ_EN[i][1]; b.mn = BIZ_EN[i][2]; }
   b.r = b.c * b.t / b.P;
   b.m = i === 0 ? CFG.mgr0 : b.c * CFG.mgrX;
 });
@@ -95,6 +116,14 @@ var UPN = ['Реклама по радиото', 'Нова техника', 'Ф�
 var ALLN = ['Банков кредит', 'Реклама по телевизията', 'Борсова листа', 'Офшорна фирма', 'Глобална корпорация',
   'Лунна база', 'Световно господство', 'Марсианска борса', 'Галактически съюз', 'Вселенски монопол',
   'Мултивселена', 'Краят на времето', 'Нова Голяма експлозия', 'Всичко е твое'];
+if (EN) {
+  UPN = ['Radio Ads', 'New Equipment', 'Franchise', 'Mobile App', 'Celebrity Endorsement',
+    'Export to Europe', 'Artificial Intelligence', 'Global Brand', 'Monopoly', 'Quantum Logistics',
+    'Interstellar Ads', 'Money Black Hole', 'Time Machine', 'Parallel Universe'];
+  ALLN = ['Bank Loan', 'TV Commercials', 'Stock Market Listing', 'Offshore Company', 'Global Corporation',
+    'Moon Base', 'World Domination', 'Martian Stock Exchange', 'Galactic Alliance', 'Universal Monopoly',
+    'Multiverse', 'End of Time', 'New Big Bang', 'Everything Is Yours'];
+}
 var UPG = [];
 (function () {
   for (var r = 0; r < UPN.length; r++) {
@@ -119,58 +148,70 @@ var PERM = [
   { id: 'auto', nm: 'Робот-счетоводител', d: 'Сам купува подобренията, щом имаш пари', max: 1, cost: function () { return 30; } },
   { id: 'magnet', nm: 'Магнит за куфарчета', d: 'Златните куфарчета идват 2 пъти по-често', max: 1, cost: function () { return 20; } }
 ];
+if (EN) [
+  ['Golden Seal', 'All profits ×2 forever'], ['Swiss Watch', 'All businesses +25% faster'], ['Investor Board', 'Each investor gives +1% more'],
+  ['Nitro', 'Turbo multiplier +2'], ['Night Shift', '+4 h of earnings while you are away'],
+  ['Loyal Managers', 'Managers stay after you sell the empire'], ['Robot Accountant', 'Buys upgrades by itself as soon as you can afford them'],
+  ['Briefcase Magnet', 'Golden briefcases appear 2× more often']
+].forEach(function (x, j) { PERM[j].nm = x[0]; PERM[j].d = x[1]; });
 var PERMI = {};
 PERM.forEach(function (p) { PERMI[p.id] = p; });
 var WARPS = [{ id: 'w1', h: 1, cost: 5 }, { id: 'w6', h: 6, cost: 25 }];
 
 // Постижения
+function tx(bg, en) { return EN ? en : bg; }
 var ACH = [];
 (function () {
   var per = [25, 100, 250, 500, 1000];
   BIZ.forEach(function (b, i) {
     per.forEach(function (k, j) {
-      ACH.push({ id: 'b' + i + '_' + k, nm: b.n + ' ×' + k, d: 'Притежавай ' + k + ' бр. ' + b.n.toLowerCase(), dm: j + 1, ic: b.i,
+      ACH.push({ id: 'b' + i + '_' + k, nm: b.n + ' ×' + k, d: tx('Притежавай ' + k + ' бр. ' + b.n.toLowerCase(), 'Own ' + k + ' ' + b.pl), dm: j + 1, ic: b.i,
         t: function (s) { return s.b[i].n >= k; } });
     });
   });
-  var money = [[1e3, 'Първите хиляди'], [1e6, 'Милионер'], [1e9, 'Милиардер'], [1e12, 'Трилионер'], [1e15, 'Квадрилионер'],
-    [1e18, 'Квинтилионер'], [1e21, 'Отвъд числата'], [1e27, 'Звездно богат'], [1e33, 'Галактически богат'],
-    [1e42, 'Вселенски богат'], [1e60, 'Безкрайно богат'], [1e100, 'Гугол']];
+  var money = EN
+    ? [[1e3, 'First Thousand'], [1e6, 'Millionaire'], [1e9, 'Billionaire'], [1e12, 'Trillionaire'], [1e15, 'Quadrillionaire'],
+      [1e18, 'Quintillionaire'], [1e21, 'Beyond Numbers'], [1e27, 'Star Rich'], [1e33, 'Galaxy Rich'],
+      [1e42, 'Universe Rich'], [1e60, 'Infinitely Rich'], [1e100, 'Googol']]
+    : [[1e3, 'Първите хиляди'], [1e6, 'Милионер'], [1e9, 'Милиардер'], [1e12, 'Трилионер'], [1e15, 'Квадрилионер'],
+      [1e18, 'Квинтилионер'], [1e21, 'Отвъд числата'], [1e27, 'Звездно богат'], [1e33, 'Галактически богат'],
+      [1e42, 'Вселенски богат'], [1e60, 'Безкрайно богат'], [1e100, 'Гугол']];
   money.forEach(function (m, j) {
-    ACH.push({ id: 'm' + j, nm: m[1], d: 'Спечели общо ' + fmt(m[0]) + ' €', dm: 1 + Math.floor(j / 2), ic: '💰',
+    ACH.push({ id: 'm' + j, nm: m[1], d: tx('Спечели общо ' + fmt(m[0]) + ' €', 'Earn ' + fmt(m[0]) + ' € in total'), dm: 1 + Math.floor(j / 2), ic: '💰',
       t: function (s) { return s.life >= m[0]; } });
   });
-  [[1, 'Всички бизнеси'], [10, 'Империя ×10'], [25, 'Империя ×25'], [50, 'Империя ×50'], [100, 'Империя ×100'], [200, 'Империя ×200'], [500, 'Империя ×500']]
+  [[1, tx('Всички бизнеси', 'All Businesses')], [10, tx('Империя', 'Empire') + ' ×10'], [25, tx('Империя', 'Empire') + ' ×25'], [50, tx('Империя', 'Empire') + ' ×50'],
+    [100, tx('Империя', 'Empire') + ' ×100'], [200, tx('Империя', 'Empire') + ' ×200'], [500, tx('Империя', 'Empire') + ' ×500']]
     .forEach(function (g, j) {
-      ACH.push({ id: 'g' + g[0], nm: g[1], d: 'Всички 15 бизнеса с поне ' + g[0] + ' бр.', dm: 2 + j, ic: '🏛️',
+      ACH.push({ id: 'g' + g[0], nm: g[1], d: tx('Всички 15 бизнеса с поне ' + g[0] + ' бр.', 'All 15 businesses with at least ' + g[0] + ' each'), dm: 2 + j, ic: '🏛️',
         t: function (s) { return minOwned(s) >= g[0]; } });
     });
-  [[1, 'Първи мениджър'], [5, 'Екип'], [15, 'Пълен екип']].forEach(function (g, j) {
-    ACH.push({ id: 'mg' + g[0], nm: g[1], d: 'Наеми ' + g[0] + (g[0] === 1 ? ' мениджър' : ' мениджъра'), dm: 1 + j, ic: '👔',
+  [[1, tx('Първи мениджър', 'First Manager')], [5, tx('Екип', 'The Team')], [15, tx('Пълен екип', 'Full Team')]].forEach(function (g, j) {
+    ACH.push({ id: 'mg' + g[0], nm: g[1], d: tx('Наеми ' + g[0] + (g[0] === 1 ? ' мениджър' : ' мениджъра'), 'Hire ' + g[0] + (g[0] === 1 ? ' manager' : ' managers')), dm: 1 + j, ic: '👔',
       t: function (s) { return countMgr(s) >= g[0]; } });
   });
-  [[10, 'Първи подобрения'], [50, 'Модернизация'], [100, 'Технологичен скок'], [200, 'Всичко най-ново']].forEach(function (g, j) {
-    ACH.push({ id: 'up' + g[0], nm: g[1], d: 'Купи ' + g[0] + ' подобрения', dm: 1 + j, ic: '⚙️',
+  [[10, tx('Първи подобрения', 'First Upgrades')], [50, tx('Модернизация', 'Modernization')], [100, tx('Технологичен скок', 'Tech Leap')], [200, tx('Всичко най-ново', 'State of the Art')]].forEach(function (g, j) {
+    ACH.push({ id: 'up' + g[0], nm: g[1], d: tx('Купи ' + g[0] + ' подобрения', 'Buy ' + g[0] + ' upgrades'), dm: 1 + j, ic: '⚙️',
       t: function (s) { return countUp(s) >= g[0]; } });
   });
-  [[1, 'Първа продажба'], [5, 'Сериен предприемач'], [25, 'Легенда на борсата'], [100, 'Вечният магнат']].forEach(function (g, j) {
-    ACH.push({ id: 'p' + g[0], nm: g[1], d: 'Продай империята ' + g[0] + (g[0] === 1 ? ' път' : ' пъти'), dm: 3 + j * 2, ic: '🔁',
+  [[1, tx('Първа продажба', 'First Sale')], [5, tx('Сериен предприемач', 'Serial Entrepreneur')], [25, tx('Легенда на борсата', 'Stock Market Legend')], [100, tx('Вечният магнат', 'Eternal Tycoon')]].forEach(function (g, j) {
+    ACH.push({ id: 'p' + g[0], nm: g[1], d: tx('Продай империята ' + g[0] + (g[0] === 1 ? ' път' : ' пъти'), 'Sell the empire ' + (g[0] === 1 ? 'once' : g[0] + ' times')), dm: 3 + j * 2, ic: '🔁',
       t: function (s) { return s.st.pres >= g[0]; } });
   });
-  [[100, 'Първи инвеститори'], [1e4, 'Борда на директорите'], [1e6, 'Уолстрийт'], [1e9, 'Всички банки на света']].forEach(function (g, j) {
-    ACH.push({ id: 'i' + j, nm: g[1], d: 'Имай ' + fmt(g[0]) + ' инвеститори', dm: 3 + j * 2, ic: '🤝',
+  [[100, tx('Първи инвеститори', 'First Investors')], [1e4, tx('Борда на директорите', 'Board of Directors')], [1e6, tx('Уолстрийт', 'Wall Street')], [1e9, tx('Всички банки на света', 'Every Bank in the World')]].forEach(function (g, j) {
+    ACH.push({ id: 'i' + j, nm: g[1], d: tx('Имай ' + fmt(g[0]) + ' инвеститори', 'Have ' + fmt(g[0]) + ' investors'), dm: 3 + j * 2, ic: '🤝',
       t: function (s) { return s.inv >= g[0]; } });
   });
-  [[100, 'Трудолюбив'], [1000, 'Неуморим'], [10000, 'Железен пръст']].forEach(function (g, j) {
-    ACH.push({ id: 'c' + g[0], nm: g[1], d: 'Натисни бизнес ' + fmt(g[0]) + ' пъти', dm: 1 + j, ic: '👆',
+  [[100, tx('Трудолюбив', 'Hard Worker')], [1000, tx('Неуморим', 'Tireless')], [10000, tx('Железен пръст', 'Iron Finger')]].forEach(function (g, j) {
+    ACH.push({ id: 'c' + g[0], nm: g[1], d: tx('Натисни бизнес ' + fmt(g[0]) + ' пъти', 'Tap businesses ' + fmt(g[0]) + ' times'), dm: 1 + j, ic: '👆',
       t: function (s) { return s.st.clicks >= g[0]; } });
   });
-  [[1, 'Златно куфарче'], [25, 'Колекционер'], [100, 'Ловец на злато']].forEach(function (g, j) {
-    ACH.push({ id: 'k' + g[0], nm: g[1], d: 'Хвани ' + g[0] + (g[0] === 1 ? ' златно куфарче' : ' златни куфарчета'), dm: 1 + j * 2, ic: '💼',
+  [[1, tx('Златно куфарче', 'Golden Briefcase')], [25, tx('Колекционер', 'Collector')], [100, tx('Ловец на злато', 'Gold Hunter')]].forEach(function (g, j) {
+    ACH.push({ id: 'k' + g[0], nm: g[1], d: tx('Хвани ' + g[0] + (g[0] === 1 ? ' златно куфарче' : ' златни куфарчета'), 'Catch ' + g[0] + (g[0] === 1 ? ' golden briefcase' : ' golden briefcases')), dm: 1 + j * 2, ic: '💼',
       t: function (s) { return s.st.cases >= g[0]; } });
   });
-  [[10, 'Газ до дупка'], [100, 'Скоростен демон']].forEach(function (g, j) {
-    ACH.push({ id: 't' + g[0], nm: g[1], d: 'Пусни турбото ' + g[0] + ' пъти', dm: 1 + j * 2, ic: '⚡',
+  [[10, tx('Газ до дупка', 'Pedal to the Metal')], [100, tx('Скоростен демон', 'Speed Demon')]].forEach(function (g, j) {
+    ACH.push({ id: 't' + g[0], nm: g[1], d: tx('Пусни турбото ' + g[0] + ' пъти', 'Use turbo ' + g[0] + ' times'), dm: 1 + j * 2, ic: '⚡',
       t: function (s) { return s.st.turbos >= g[0]; } });
   });
 })();
@@ -490,8 +531,9 @@ function tick(s, dtSec, now) {
 }
 
 var MM = {
+  lang: LANG, DEC: DEC,
   CFG: CFG, BIZ: BIZ, MS: MS, GMS: GMS, UPG: UPG, PERM: PERM, WARPS: WARPS, ACH: ACH,
-  fmt: fmt, fmtTime: fmtTime,
+  fmt: fmt, fmtTime: fmtTime, fmtSec: fmtSec,
   newState: newState, load: load, save: save, derive: derive,
   lvl: lvl, minOwned: minOwned, countMgr: countMgr, countUp: countUp,
   msMult: msMult, nextMS: nextMS, gmsMult: gmsMult, nextGMS: nextGMS,

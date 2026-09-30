@@ -263,11 +263,26 @@ textarea{width:100%;min-height:74px;border:1px solid var(--line);border-radius:1
 }
 </style>
 
+<script>
+// Език: запазен избор или езикът на браузъра (български → bg, всичко друго → en)
+(function () {
+  var l = null;
+  try { l = localStorage.getItem('metko-magnat-lang'); } catch (e) {}
+  if (l !== 'bg' && l !== 'en') {
+    var list = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || '']);
+    l = list.some(function (x) { return /^bg/i.test(x); }) ? 'bg' : 'en';
+  }
+  window.MM_LANG = l;
+  document.documentElement.lang = l;
+  if (l === 'en') document.title = 'Metko Tycoon';
+})();
+</script>
+
 <div class="top" id="top">
   <canvas id="noteCv" aria-hidden="true"></canvas>
   <div class="top-in">
     <div class="brand">
-      <span class="name">Метко Магнат</span>
+      <span class="name" data-en="Metko Tycoon">Метко Магнат</span>
       <span class="serial" id="serial">ММ № 0000000</span>
     </div>
     <div class="cash">
@@ -276,34 +291,34 @@ textarea{width:100%;min-height:74px;border:1px solid var(--line);border-radius:1
       <div class="boosts" id="boosts"></div>
     </div>
     <div class="chips">
-      <button class="chip gift" id="giftChip" data-act="daily" hidden title="Дневен бонус">🎁 <span class="lbl">Дневен бонус</span></button>
-      <button class="chip" data-act="tab" data-tab="borsa" title="Инвеститори"><span class="lbl">Инвеститори</span><b id="invChip">×1</b></button>
-      <button class="chip" data-act="tab" data-tab="dm" title="Диаманти">💎 <b id="dmChip">0</b></button>
+      <button class="chip gift" id="giftChip" data-act="daily" hidden title="Дневен бонус" data-en-title="Daily bonus">🎁 <span class="lbl" data-en="Daily bonus">Дневен бонус</span></button>
+      <button class="chip" data-act="tab" data-tab="borsa" title="Инвеститори" data-en-title="Investors"><span class="lbl" data-en="Investors">Инвеститори</span><b id="invChip">×1</b></button>
+      <button class="chip" data-act="tab" data-tab="dm" title="Диаманти" data-en-title="Diamonds">💎 <b id="dmChip">0</b></button>
     </div>
   </div>
   <div class="strip" id="strip">
     <div class="strip-in">
-      <div><span class="seg-label">Купувай по</span><span class="seg" role="group" aria-label="Колко да купувам">
-        <button data-act="mode" data-mode="1">×1</button><button data-act="mode" data-mode="10">×10</button><button data-act="mode" data-mode="100">×100</button><button data-act="mode" data-mode="next">ПРАГ</button><button data-act="mode" data-mode="max">МАКС</button>
+      <div><span class="seg-label" data-en="Buy">Купувай по</span><span class="seg" role="group" aria-label="Колко да купувам" data-en-aria="How many to buy">
+        <button data-act="mode" data-mode="1">×1</button><button data-act="mode" data-mode="10">×10</button><button data-act="mode" data-mode="100">×100</button><button data-act="mode" data-mode="next" data-en="NEXT">ПРАГ</button><button data-act="mode" data-mode="max" data-en="MAX">МАКС</button>
       </span></div>
       <button class="turbo" id="turbo" data-act="turbo">⚡ Турбо ×3</button>
     </div>
   </div>
 </div>
-<div class="ticker" aria-label="Новини">
-  <span class="lbl">БОРСА</span>
+<div class="ticker" aria-label="Новини" data-en-aria="News">
+  <span class="lbl" data-en="MARKET">БОРСА</span>
   <div class="win"><div class="track" id="track"></div></div>
 </div>
 
 <div class="shell">
-  <nav class="nav" id="nav" aria-label="Меню">
-    <button data-act="tab" data-tab="biz"><svg viewBox="0 0 24 24"><path d="M4 10v10h16V10M3 10l2-6h14l2 6M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0M10 20v-5h4v5"/></svg><span class="long">Бизнеси</span><span class="short">Бизнеси</span></button>
-    <button data-act="tab" data-tab="mgr"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.5"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7M12 14l-1.3 3 1.3 3 1.3-3z"/></svg><span class="long">Мениджъри</span><span class="short">Екип</span><i class="dot" id="dot-mgr" hidden></i></button>
-    <button data-act="tab" data-tab="up"><svg viewBox="0 0 24 24"><path d="M12 18V5M6 10.5 12 5l6 5.5M5 21h14"/></svg><span class="long">Подобрения</span><span class="short">Подобр.</span><i class="dot" id="dot-up" hidden></i></button>
-    <button data-act="tab" data-tab="borsa"><svg viewBox="0 0 24 24"><path d="M3 20h18M5 16l4-5 4 3 6-8M15 6h4v4"/></svg><span class="long">Борса</span><span class="short">Борса</span><i class="dot" id="dot-borsa" hidden></i></button>
-    <button data-act="tab" data-tab="dm"><svg viewBox="0 0 24 24"><path d="M6.5 4h11L21 9l-9 11L3 9zM3 9h18M9.5 4 8 9l4 11 4-11-1.5-5"/></svg><span class="long">Диаманти</span><span class="short">Диаманти</span><i class="dot" id="dot-dm" hidden></i></button>
-    <button data-act="tab" data-tab="ach"><svg viewBox="0 0 24 24"><circle cx="12" cy="15" r="5"/><path d="M8.6 11.2 6 3h4l2 5 2-5h4l-2.6 8.2M12 13v4"/></svg><span class="long">Награди</span><span class="short">Награди</span><i class="dot n" id="dot-ach" hidden></i></button>
-    <button data-act="tab" data-tab="more"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="long">Статистика</span><span class="short">Още</span></button>
+  <nav class="nav" id="nav" aria-label="Меню" data-en-aria="Menu">
+    <button data-act="tab" data-tab="biz"><svg viewBox="0 0 24 24"><path d="M4 10v10h16V10M3 10l2-6h14l2 6M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0M10 20v-5h4v5"/></svg><span class="long" data-en="Businesses">Бизнеси</span><span class="short" data-en="Business">Бизнеси</span></button>
+    <button data-act="tab" data-tab="mgr"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.5"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7M12 14l-1.3 3 1.3 3 1.3-3z"/></svg><span class="long" data-en="Managers">Мениджъри</span><span class="short" data-en="Team">Екип</span><i class="dot" id="dot-mgr" hidden></i></button>
+    <button data-act="tab" data-tab="up"><svg viewBox="0 0 24 24"><path d="M12 18V5M6 10.5 12 5l6 5.5M5 21h14"/></svg><span class="long" data-en="Upgrades">Подобрения</span><span class="short" data-en="Upgrades">Подобр.</span><i class="dot" id="dot-up" hidden></i></button>
+    <button data-act="tab" data-tab="borsa"><svg viewBox="0 0 24 24"><path d="M3 20h18M5 16l4-5 4 3 6-8M15 6h4v4"/></svg><span class="long" data-en="Stock Market">Борса</span><span class="short" data-en="Market">Борса</span><i class="dot" id="dot-borsa" hidden></i></button>
+    <button data-act="tab" data-tab="dm"><svg viewBox="0 0 24 24"><path d="M6.5 4h11L21 9l-9 11L3 9zM3 9h18M9.5 4 8 9l4 11 4-11-1.5-5"/></svg><span class="long" data-en="Diamonds">Диаманти</span><span class="short" data-en="Diamonds">Диаманти</span><i class="dot" id="dot-dm" hidden></i></button>
+    <button data-act="tab" data-tab="ach"><svg viewBox="0 0 24 24"><circle cx="12" cy="15" r="5"/><path d="M8.6 11.2 6 3h4l2 5 2-5h4l-2.6 8.2M12 13v4"/></svg><span class="long" data-en="Achievements">Награди</span><span class="short" data-en="Awards">Награди</span><i class="dot n" id="dot-ach" hidden></i></button>
+    <button data-act="tab" data-tab="more"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="long" data-en="Stats &amp; Settings">Статистика</span><span class="short" data-en="More">Още</span></button>
   </nav>
 
   <main>
@@ -313,44 +328,44 @@ textarea{width:100%;min-height:74px;border:1px solid var(--line);border-radius:1
 
     <section id="t-mgr" hidden>
       <div class="sec-head">
-        <div><h2>Мениджъри</h2><p>Мениджърът пуска бизнеса отново и отново, без да натискаш. Работи и докато играта е затворена.</p></div>
-        <button class="act-btn" data-act="hireAll" id="hireAll">Наеми всички, които мога</button>
+        <div><h2 data-en="Managers">Мениджъри</h2><p data-en="A manager runs the business again and again without you tapping. They keep working even while the game is closed.">Мениджърът пуска бизнеса отново и отново, без да натискаш. Работи и докато играта е затворена.</p></div>
+        <button class="act-btn" data-act="hireAll" id="hireAll" data-en="Hire all I can afford">Наеми всички, които мога</button>
       </div>
       <div class="list" id="mgrList"></div>
     </section>
 
     <section id="t-up" hidden>
       <div class="sec-head">
-        <div><h2>Подобрения</h2><p id="upSub">Всяко подобрение утроява печалбата. Най-евтините са първи.</p></div>
-        <button class="act-btn" data-act="upAll" id="upAll">Купи всички, които мога</button>
+        <div><h2 data-en="Upgrades">Подобрения</h2><p id="upSub">Всяко подобрение утроява печалбата. Най-евтините са първи.</p></div>
+        <button class="act-btn" data-act="upAll" id="upAll" data-en="Buy all I can afford">Купи всички, които мога</button>
       </div>
       <div class="list" id="upList"></div>
     </section>
 
     <section id="t-borsa" hidden>
       <div class="sec-head">
-        <div><h2>Борса</h2><p>Продай империята на инвеститори. Започваш отначало, но всеки инвеститор завинаги дава <b id="bPct">+2%</b> печалба.</p></div>
+        <div><h2 data-en="Stock Market">Борса</h2><p data-en-html="Sell your empire to investors. You start over, but every investor gives &lt;b id=&quot;bPct&quot;&gt;+2%&lt;/b&gt; profit forever.">Продай империята на инвеститори. Започваш отначало, но всеки инвеститор завинаги дава <b id="bPct">+2%</b> печалба.</p></div>
       </div>
       <div class="borsa">
         <div class="card">
-          <div class="k">Инвеститори сега</div>
+          <div class="k" data-en="Investors now">Инвеститори сега</div>
           <div class="v" id="bInv">0</div>
           <div class="s" id="bInvX">печалба ×1</div>
         </div>
         <div class="card gold">
-          <div class="k">Получаваш, ако продадеш сега</div>
+          <div class="k" data-en="You get if you sell now">Получаваш, ако продадеш сега</div>
           <div class="v" id="bGain">+0</div>
           <div class="s" id="bGainX">печалбата става ×1</div>
         </div>
         <div class="card wide">
-          <div class="k">До следващия инвеститор</div>
+          <div class="k" data-en="Until the next investor">До следващия инвеститор</div>
           <div class="pbar"><i id="bNextFill"></i></div>
           <div class="s" id="bNext">…</div>
           <p class="note-line" id="bTip"></p>
           <button class="pres" id="bBtn" data-act="pres">Продай империята</button>
           <div class="rules panel">
-            <div><h4>Започва отначало</h4><ul><li>Парите и бизнесите</li><li>Мениджърите (освен с „Верни мениджъри“)</li><li>Подобренията</li></ul></div>
-            <div><h4>Остава завинаги</h4><ul><li>Инвеститорите</li><li>Диамантите и магазинът с диаманти</li><li>Постиженията и техните бонуси</li></ul></div>
+            <div><h4 data-en="Starts over">Започва отначало</h4><ul><li data-en="Money and businesses">Парите и бизнесите</li><li data-en="Managers (unless you have “Loyal Managers”)">Мениджърите (освен с „Верни мениджъри“)</li><li data-en="Upgrades">Подобренията</li></ul></div>
+            <div><h4 data-en="Stays forever">Остава завинаги</h4><ul><li data-en="Investors">Инвеститорите</li><li data-en="Diamonds and the diamond shop">Диамантите и магазинът с диаманти</li><li data-en="Achievements and their bonuses">Постиженията и техните бонуси</li></ul></div>
           </div>
         </div>
       </div>
@@ -358,48 +373,49 @@ textarea{width:100%;min-height:74px;border:1px solid var(--line);border-radius:1
 
     <section id="t-dm" hidden>
       <div class="sec-head">
-        <div><h2>Диаманти</h2><p>Диамантите не се купуват с истински пари. Идват от постижения, златни куфарчета, дневния бонус и продажбата на империята. Покупките тук остават завинаги.</p></div>
+        <div><h2 data-en="Diamonds">Диаманти</h2><p data-en="Diamonds can’t be bought with real money. You get them from achievements, golden briefcases, the daily bonus and selling your empire. Everything bought here is yours forever.">Диамантите не се купуват с истински пари. Идват от постижения, златни куфарчета, дневния бонус и продажбата на империята. Покупките тук остават завинаги.</p></div>
       </div>
       <div class="list" id="dmList"></div>
     </section>
 
     <section id="t-ach" hidden>
       <div class="sec-head">
-        <div><h2>Награди</h2><p id="achSub">Всяко постижение дава +2% печалба завинаги и диаманти.</p></div>
+        <div><h2 data-en="Achievements">Награди</h2><p id="achSub">Всяко постижение дава +2% печалба завинаги и диаманти.</p></div>
       </div>
       <div class="ach" id="achList"></div>
     </section>
 
     <section id="t-more" hidden>
-      <div class="sec-head"><div><h2>Статистика</h2></div></div>
+      <div class="sec-head"><div><h2 data-en="Statistics">Статистика</h2></div></div>
       <div class="stats" id="stats"></div>
       <div class="panel">
-        <h3>Как се играе</h3>
+        <h3 data-en="How to play">Как се играе</h3>
         <ol class="howto">
-          <li>Натисни иконата на бизнеса, за да спечелиш пари.</li>
-          <li>Купувай още бройки. На 25, 50, 100, 200… бройки бизнесът става 2 пъти по-бърз.</li>
-          <li>Наеми мениджър, за да работи бизнесът сам.</li>
-          <li>Купувай подобрения. Всяко утроява печалбата.</li>
-          <li>Пускай турбото и хващай златните куфарчета.</li>
-          <li>Когато в „Борса“ ще удвоиш инвеститорите, продай империята и започни много по-силен.</li>
+          <li data-en="Tap a business icon to earn money.">Натисни иконата на бизнеса, за да спечелиш пари.</li>
+          <li data-en="Buy more units. At 25, 50, 100, 200… units a business gets 2× faster.">Купувай още бройки. На 25, 50, 100, 200… бройки бизнесът става 2 пъти по-бърз.</li>
+          <li data-en="Hire a manager so the business runs by itself.">Наеми мениджър, за да работи бизнесът сам.</li>
+          <li data-en="Buy upgrades. Each one triples the profit.">Купувай подобрения. Всяко утроява печалбата.</li>
+          <li data-en="Fire up the turbo and catch the golden briefcases.">Пускай турбото и хващай златните куфарчета.</li>
+          <li data-en="When the Stock Market would double your investors, sell the empire and start over much stronger.">Когато в „Борса“ ще удвоиш инвеститорите, продай империята и започни много по-силен.</li>
         </ol>
       </div>
       <div class="panel">
-        <h3>Настройки</h3>
+        <h3 data-en="Settings">Настройки</h3>
         <div class="btns">
           <button class="act-btn" data-act="sound" id="soundBtn">Звук: включен</button>
+          <button class="act-btn" data-act="lang" id="langBtn">🌐 English</button>
         </div>
       </div>
       <div class="panel">
-        <h3>Запис</h3>
-        <p class="note-line" style="margin-top:0">Играта се записва сама в този браузър. За да я пренесеш на друго устройство, копирай кода и го постави там.</p>
+        <h3 data-en="Save">Запис</h3>
+        <p class="note-line" style="margin-top:0" data-en="The game saves itself in this browser. To move it to another device, copy the code and paste it there.">Играта се записва сама в този браузър. За да я пренесеш на друго устройство, копирай кода и го постави там.</p>
         <div class="btns" style="margin-top:10px">
-          <button class="act-btn" data-act="export">Покажи кода на записа</button>
-          <button class="act-btn" data-act="copy" id="copyBtn" hidden>Копирай</button>
-          <button class="act-btn" data-act="import">Зареди от кода</button>
-          <button class="danger" data-act="reset" id="resetBtn">Изтрий всичко</button>
+          <button class="act-btn" data-act="export" data-en="Show save code">Покажи кода на записа</button>
+          <button class="act-btn" data-act="copy" id="copyBtn" hidden data-en="Copy">Копирай</button>
+          <button class="act-btn" data-act="import" data-en="Load from code">Зареди от кода</button>
+          <button class="danger" data-act="reset" id="resetBtn" data-en="Delete everything">Изтрий всичко</button>
         </div>
-        <textarea id="saveBox" aria-label="Код на записа" placeholder="Тук се показва кодът. За зареждане постави код и натисни „Зареди от кода“." spellcheck="false"></textarea>
+        <textarea id="saveBox" aria-label="Код на записа" data-en-aria="Save code" placeholder="Тук се показва кодът. За зареждане постави код и натисни „Зареди от кода“." data-en-ph="The code appears here. To load, paste a code and press “Load from code”." spellcheck="false"></textarea>
       </div>
     </section>
   </main>
@@ -407,16 +423,16 @@ textarea{width:100%;min-height:74px;border:1px solid var(--line);border-radius:1
 
 <div class="toasts" id="toasts" aria-live="polite"></div>
 <canvas id="confetti" aria-hidden="true"></canvas>
-<button class="case" id="case" data-act="case" hidden aria-label="Златно куфарче">💼</button>
+<button class="case" id="case" data-act="case" hidden aria-label="Златно куфарче" data-en-aria="Golden briefcase">💼</button>
 <div class="modal" id="modal" hidden>
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="offTitle">
-    <h2 id="offTitle">Докато те нямаше</h2>
+    <h2 id="offTitle" data-en="While you were away">Докато те нямаше</h2>
     <p id="offText">Мениджърите работиха вместо теб.</p>
     <div class="big" id="offAmt">+0 €</div>
     <p id="offCap" hidden></p>
     <div class="btns">
-      <button class="act-btn" data-act="offTake">Вземи</button>
-      <button class="act-btn" data-act="offDouble" id="offDouble">Вземи ×2 за 💎 3</button>
+      <button class="act-btn" data-act="offTake" data-en="Collect">Вземи</button>
+      <button class="act-btn" data-act="offDouble" id="offDouble" data-en="Collect ×2 for 💎 3">Вземи ×2 за 💎 3</button>
     </div>
   </div>
 </div>
@@ -436,6 +452,19 @@ var sigs = {};
 var nextCase = 0, caseUntil = 0;
 var pendingOff = 0;
 var fmt = M.fmt;
+var EN = M.lang === 'en';
+function tx(bg, en) { return EN ? en : bg; }
+var LKEY = 'metko-magnat-lang';
+// Превежда статичния текст по data-en атрибутите
+function applyLang() {
+  if (!EN) return;
+  document.querySelectorAll('[data-en]').forEach(function (el) { el.textContent = el.getAttribute('data-en'); });
+  document.querySelectorAll('[data-en-html]').forEach(function (el) { el.innerHTML = el.getAttribute('data-en-html'); });
+  document.querySelectorAll('[data-en-title]').forEach(function (el) { el.title = el.getAttribute('data-en-title'); });
+  document.querySelectorAll('[data-en-aria]').forEach(function (el) { el.setAttribute('aria-label', el.getAttribute('data-en-aria')); });
+  document.querySelectorAll('[data-en-ph]').forEach(function (el) { el.placeholder = el.getAttribute('data-en-ph'); });
+}
+function serial() { return tx('ММ № ', 'MT No. ') + pad(Math.floor(S.st.start / 1000) % 10000000, 7); }
 
 function $(id) { return document.getElementById(id); }
 function parse(str) { try { return str ? JSON.parse(str) : null; } catch (e) { return null; } }
@@ -445,10 +474,7 @@ function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
 function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 function pad(n, w) { n = String(n); while (n.length < w) n = '0' + n; return n; }
 function eur(x) { return fmt(x) + ' €'; }
-function secs(sec) {
-  if (sec < 10) return sec.toFixed(1).replace('.', ',') + ' сек';
-  return M.fmtTime(sec);
-}
+function secs(sec) { return M.fmtSec(sec); }
 function persist() { if (S) { lsSet(KEY, JSON.stringify(M.save(S))); lsSet(OKEY, JSON.stringify(O)); } }
 
 // ---------- звук ----------
@@ -486,7 +512,7 @@ function build() {
   var h = '';
   M.BIZ.forEach(function (b, i) {
     h += '<article class="biz" id="bz' + i + '" hidden>' +
-      '<button class="medal" data-act="run" data-i="' + i + '" aria-label="Пусни: ' + esc(b.n) + '"><span class="face">' + b.i + '</span><span class="own num">0</span></button>' +
+      '<button class="medal" data-act="run" data-i="' + i + '" aria-label="' + tx('Пусни: ', 'Run: ') + esc(b.n) + '"><span class="face">' + b.i + '</span><span class="own num">0</span></button>' +
       '<div class="row1"><span class="no">№ ' + pad(i + 1, 2) + '</span><h3>' + esc(b.n) + '</h3><span class="mgr"></span></div>' +
       '<div class="bar"><div class="fill"></div><div class="lbl"><span class="rev"></span><span class="tm"></span></div></div>' +
       '<div class="row3"><button class="buy" data-act="buy" data-i="' + i + '"><span class="n"></span><span class="c"></span></button><span class="ms"></span></div>' +
@@ -503,7 +529,7 @@ function build() {
       sig: {}
     });
   }
-  $('serial').textContent = 'ММ № ' + pad(Math.floor(S.st.start / 1000) % 10000000, 7);
+  $('serial').textContent = serial();
   drawNote();
   sizeConfetti();
 }
@@ -544,7 +570,23 @@ function drawNote() {
 }
 
 // ---------- новини ----------
-var FLAVOR = [
+var FLAVOR = EN ? [
+  function (n) { return 'Little Lily sold ' + fmt(n * 137) + ' cups of lemonade in a single day'; },
+  function (n) { return 'Granny Pena opened bakery #' + n; },
+  function (n) { return 'Uncle Zhoro washed ' + fmt(n * 48) + ' cars without a break'; },
+  function () { return 'Giuseppe: “My pizza beats anything in Naples”'; },
+  function (n) { return 'Mrs. Stoyanova’s chain now has ' + n + ' supermarkets'; },
+  function () { return 'Metko’s hotels are booked to the last room'; },
+  function () { return 'Coach Itso promised a title this season'; },
+  function (n) { return 'Director Veso is shooting film #' + n; },
+  function () { return 'Mr. Zlatev’s bank gave a loan to an entire city'; },
+  function () { return 'Sheikh Ahmed struck a new oil well'; },
+  function () { return 'Robot M-3 asked for a vacation. Request denied.'; },
+  function () { return 'Captain Nova landed on the Moon with a crate of lemonade'; },
+  function () { return 'Kuzman the Miner hauled in an asteroid of pure gold'; },
+  function () { return 'The Mars colony adopted the euro'; },
+  function (n) { return 'The Galactic Empire now spans ' + n + ' star systems'; }
+] : [
   function (n) { return 'Малката Лили продаде ' + fmt(n * 137) + ' чаши лимонада за един ден'; },
   function (n) { return 'Баба Пена отвори ' + n + '-ата си баничарница'; },
   function (n) { return 'Бате Жоро изми ' + fmt(n * 48) + ' коли без почивка'; },
@@ -561,7 +603,11 @@ var FLAVOR = [
   function () { return 'Колонията на Марс въведе еврото'; },
   function (n) { return 'Галактическата империя вече има ' + n + ' звездни системи'; }
 ];
-var GENERIC = [
+var GENERIC = EN ? [
+  'Analysts: “Lemonade is the new gold”', 'Competitors want to learn the secret of your success',
+  'The tax office is still counting your money', 'New survey: every second person dreams of being a tycoon',
+  'The stock market opened with a record rally', 'Markets reacted calmly to your latest million'
+] : [
   'Анализатори: „Лимонадата е новото злато“', 'Конкурентите искат да научат тайната на успеха',
   'Данъчните още броят парите ти', 'Ново проучване: всеки втори българин иска да е магнат',
   'Борсата отвори с рекорден ръст', 'Пазарите реагираха спокойно на поредния ти милион'
@@ -570,11 +616,11 @@ function headlines() {
   var out = [], i;
   for (i = 0; i < NB; i++) if (S.b[i].n) out.push(FLAVOR[i](S.b[i].n));
   var nx = firstLocked();
-  if (nx >= 0) out.push('Слух: скоро отваря ' + M.BIZ[nx].n.toLowerCase() + ' на Метко');
+  if (nx >= 0) out.push(tx('Слух: скоро отваря ' + M.BIZ[nx].n.toLowerCase() + ' на Метко', 'Rumor: Metko is about to open a new ' + M.BIZ[nx].n));
   var ips = M.incomePerSec(S);
-  if (ips > 0) out.push('„Метко Магнат“ печели ' + eur(ips) + ' всяка секунда');
-  if (S.inv) out.push(fmt(S.inv) + ' инвеститори чакат следващата продажба');
-  out.push('Акциите на „Метко Магнат“ скочиха с ' + (3 + Math.floor(Math.random() * 60)) + '%');
+  if (ips > 0) out.push(tx('„Метко Магнат“ печели ' + eur(ips) + ' всяка секунда', 'Metko Tycoon earns ' + eur(ips) + ' every second'));
+  if (S.inv) out.push(fmt(S.inv) + tx(' инвеститори чакат следващата продажба', ' investors are waiting for the next sale'));
+  out.push(tx('Акциите на „Метко Магнат“ скочиха с ', 'Metko Tycoon shares jumped ') + (3 + Math.floor(Math.random() * 60)) + '%');
   GENERIC.forEach(function (g) { if (Math.random() < 0.4) out.push(g); });
   for (i = out.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = out[i]; out[i] = out[j]; out[j] = t; }
   return out.slice(0, 7);
@@ -593,7 +639,7 @@ function msInfo(n) {
   for (var j = 0; j < M.MS.length; j++) { if (M.MS[j][0] <= n) prev = M.MS[j][0]; else { next = M.MS[j]; break; } }
   return { prev: prev, next: next };
 }
-function msText(m) { return m[1] === 's' ? 'скорост ×' + m[2] : 'печалба ×' + m[2]; }
+function msText(m) { return (m[1] === 's' ? tx('скорост ×', 'speed ×') : tx('печалба ×', 'profit ×')) + m[2]; }
 function toast(title, text) {
   var box = $('toasts');
   var el = document.createElement('div');
@@ -651,9 +697,9 @@ function doBuy(i) {
   var r = M.buy(S, i, n);
   if (!r) { sfx('no'); return; }
   var b = M.BIZ[i], lines = [];
-  M.MS.forEach(function (m) { if (m[0] > before && m[0] <= r.after) lines.push(m[0] + ' бр.: ' + msText(m)); });
+  M.MS.forEach(function (m) { if (m[0] > before && m[0] <= r.after) lines.push(m[0] + tx(' бр.: ', ' units: ') + msText(m)); });
   if (!before) {
-    toast(b.i + ' ' + b.n, 'Нов бизнес! Натисни иконата му, за да печели.');
+    toast(b.i + ' ' + b.n, tx('Нов бизнес! Натисни иконата му, за да печели.', 'New business! Tap its icon to earn money.'));
     confetti(40); sfx('ms');
     ui.cards[i].el.classList.remove('flash'); void ui.cards[i].el.offsetWidth; ui.cards[i].el.classList.add('flash');
   } else if (lines.length) {
@@ -662,13 +708,13 @@ function doBuy(i) {
   } else sfx('buy');
   var minA = M.minOwned(S);
   M.GMS.forEach(function (g) {
-    if (g[0] > minB && g[0] <= minA) { toast('Всички бизнеси с ' + g[0] + ' бр.', 'Всички печалби ×' + g[1] + '!'); confetti(120); sfx('big'); }
+    if (g[0] > minB && g[0] <= minA) { toast(tx('Всички бизнеси с ' + g[0] + ' бр.', 'All businesses at ' + g[0] + ' units'), tx('Всички печалби ×', 'All profits ×') + g[1] + '!'); confetti(120); sfx('big'); }
   });
   renderSlow(Date.now(), true);
 }
 function doHire(i) {
   if (!M.hire(S, i)) { sfx('no'); return; }
-  toast('👔 ' + M.BIZ[i].mn, 'вече управлява: ' + M.BIZ[i].n + '. Бизнесът работи сам.');
+  toast('👔 ' + M.BIZ[i].mn, tx('вече управлява: ' + M.BIZ[i].n + '. Бизнесът работи сам.', 'now runs the ' + M.BIZ[i].n + '. It works by itself.'));
   sfx('buy');
   renderSlow(Date.now(), true);
 }
@@ -702,7 +748,7 @@ document.addEventListener('click', function (e) {
     case 'hire': doHire(i); break;
     case 'hireAll': {
       var n = M.hireAll(S);
-      if (n) { toast('👔 Наети мениджъри: ' + n, 'Още бизнеси работят сами.'); sfx('buy'); } else sfx('no');
+      if (n) { toast(tx('👔 Наети мениджъри: ', '👔 Managers hired: ') + n, tx('Още бизнеси работят сами.', 'More businesses run by themselves.')); sfx('buy'); } else sfx('no');
       renderSlow(now, true); break;
     }
     case 'up': {
@@ -711,48 +757,49 @@ document.addEventListener('click', function (e) {
     }
     case 'upAll': {
       var k = M.buyAllUps(S);
-      if (k) { toast('⚙️ Купени подобрения: ' + k, 'Печалбите растат!'); sfx('ms'); } else sfx('no');
+      if (k) { toast(tx('⚙️ Купени подобрения: ', '⚙️ Upgrades bought: ') + k, tx('Печалбите растат!', 'Profits are growing!')); sfx('ms'); } else sfx('no');
       renderSlow(now, true); break;
     }
     case 'mode': setMode(t.dataset.mode); sfx('tap'); break;
     case 'tab': setTab(t.dataset.tab); break;
     case 'turbo': {
-      if (M.turbo(S, now)) { toast('⚡ Турбо!', 'Всички печалби ×' + M.turboX(S) + ' за ' + M.CFG.turboSec + ' сек.'); sfx('big'); }
+      if (M.turbo(S, now)) { toast(tx('⚡ Турбо!', '⚡ Turbo!'), tx('Всички печалби ×' + M.turboX(S) + ' за ' + M.CFG.turboSec + ' сек.', 'All profits ×' + M.turboX(S) + ' for ' + M.CFG.turboSec + ' s.')); sfx('big'); }
       break;
     }
     case 'case': openCase(now); break;
     case 'daily': {
       var d = M.claimDaily(S, now);
-      if (d) { toast('🎁 Дневен бонус', '+' + eur(d.cash) + ' и 💎 ' + d.dm); confetti(60); sfx('gem'); }
+      if (d) { toast(tx('🎁 Дневен бонус', '🎁 Daily bonus'), '+' + eur(d.cash) + tx(' и 💎 ', ' and 💎 ') + d.dm); confetti(60); sfx('gem'); }
       renderSlow(now, true); break;
     }
     case 'pres': {
       if (M.invGain(S) < 1) break;
-      if (!armed(t, 'Сигурен ли си? Натисни пак')) break;
+      if (!armed(t, tx('Сигурен ли си? Натисни пак', 'Are you sure? Tap again'))) break;
       var r = M.prestige(S, now);
       if (r) {
-        toast('🔁 Империята е продадена!', '+' + fmt(r.inv) + ' инвеститори и 💎 ' + r.dm + '. Печалбата вече е ×' + fmt(M.invMult(S)) + '.');
+        toast(tx('🔁 Империята е продадена!', '🔁 Empire sold!'), tx('+' + fmt(r.inv) + ' инвеститори и 💎 ' + r.dm + '. Печалбата вече е ×' + fmt(M.invMult(S)) + '.', '+' + fmt(r.inv) + ' investors and 💎 ' + r.dm + '. Profit is now ×' + fmt(M.invMult(S)) + '.'));
         confetti(160); sfx('big'); setTab('biz'); persist();
       }
       renderSlow(now, true); break;
     }
     case 'perm': {
-      if (M.buyPerm(S, t.dataset.id)) { toast('💎 ' + t.dataset.nm, 'Купено завинаги.'); sfx('gem'); } else sfx('no');
+      if (M.buyPerm(S, t.dataset.id)) { toast('💎 ' + t.dataset.nm, tx('Купено завинаги.', 'Yours forever.')); sfx('gem'); } else sfx('no');
       renderSlow(now, true); break;
     }
     case 'warp': {
       var x = M.warp(S, t.dataset.id);
-      if (x !== false) { toast('⏩ Скок във времето', '+' + eur(x)); sfx('gem'); confetti(50); } else sfx('no');
+      if (x !== false) { toast(tx('⏩ Скок във времето', '⏩ Time warp'), '+' + eur(x)); sfx('gem'); confetti(50); } else sfx('no');
       renderSlow(now, true); break;
     }
     case 'offTake': case 'offDouble': {
       var mult = 1;
       if (act === 'offDouble') { if (S.dm < 3) break; S.dm -= 3; mult = 2; }
       M.addCash(S, pendingOff * mult);
-      toast('💰 +' + eur(pendingOff * mult), 'Мениджърите свършиха добра работа.');
+      toast('💰 +' + eur(pendingOff * mult), tx('Мениджърите свършиха добра работа.', 'Your managers did a great job.'));
       pendingOff = 0; $('modal').hidden = true; sfx('coin'); renderSlow(now, true); break;
     }
-    case 'sound': O.sound = !O.sound; t.textContent = 'Звук: ' + (O.sound ? 'включен' : 'изключен'); if (O.sound) sfx('buy'); persist(); break;
+    case 'sound': O.sound = !O.sound; t.textContent = soundLabel(); if (O.sound) sfx('buy'); persist(); break;
+    case 'lang': persist(); lsSet(LKEY, EN ? 'bg' : 'en'); location.reload(); break;
     case 'export': {
       persist();
       var box = $('saveBox');
@@ -761,8 +808,8 @@ document.addEventListener('click', function (e) {
     }
     case 'copy': {
       var bx = $('saveBox');
-      var done = function () { toast('Копирано', 'Постави кода на другото устройство.'); };
-      var fallback = function () { bx.focus(); bx.select(); toast('Кодът е маркиран', 'Натисни Ctrl+C, за да го копираш.'); };
+      var done = function () { toast(tx('Копирано', 'Copied'), tx('Постави кода на другото устройство.', 'Paste the code on your other device.')); };
+      var fallback = function () { bx.focus(); bx.select(); toast(tx('Кодът е маркиран', 'Code selected'), tx('Натисни Ctrl+C, за да го копираш.', 'Press Ctrl+C to copy it.')); };
       try { navigator.clipboard.writeText(bx.value).then(done, fallback); } catch (err) { fallback(); }
       break;
     }
@@ -770,17 +817,17 @@ document.addEventListener('click', function (e) {
       var raw = $('saveBox').value.trim();
       var obj = null;
       try { obj = JSON.parse(decodeURIComponent(escape(atob(raw)))); } catch (err) { obj = null; }
-      if (!obj || !Array.isArray(obj.b)) { toast('Кодът не става', 'Копирай целия код от „Покажи кода на записа“ и опитай пак.'); break; }
+      if (!obj || !Array.isArray(obj.b)) { toast(tx('Кодът не става', 'That code doesn’t work'), tx('Копирай целия код от „Покажи кода на записа“ и опитай пак.', 'Copy the whole code from “Show save code” and try again.')); break; }
       S = M.load(obj, now); S.last = now; persist();
-      toast('Записът е зареден', 'Продължаваш оттам, докъдето беше стигнал.');
+      toast(tx('Записът е зареден', 'Save loaded'), tx('Продължаваш оттам, докъдето беше стигнал.', 'You continue right where you left off.'));
       renderTicker(); renderSlow(now, true); break;
     }
     case 'reset': {
-      if (!armed(t, 'Всичко ще изчезне. Натисни пак')) break;
+      if (!armed(t, tx('Всичко ще изчезне. Натисни пак', 'Everything will be lost. Tap again'))) break;
       lsDel(KEY);
       S = M.newState(now); O.hint0 = 0; O.seenAch = 0; persist();
-      $('serial').textContent = 'ММ № ' + pad(Math.floor(S.st.start / 1000) % 10000000, 7);
-      toast('Нова игра', 'Започваш с една лимонада.'); setTab('biz'); renderTicker(); renderSlow(now, true); break;
+      $('serial').textContent = serial();
+      toast(tx('Нова игра', 'New game'), tx('Започваш с една лимонада.', 'You start with one lemonade stand.')); setTab('biz'); renderTicker(); renderSlow(now, true); break;
     }
   }
 });
@@ -830,9 +877,9 @@ function openCase(now) {
   var r = el.getBoundingClientRect();
   el.hidden = true; nextCase = now + caseDelay();
   var res = M.openCase(S, now, Math.random());
-  if (res.kind === 'cash') { toast('💼 Изгодна сделка!', '+' + eur(res.x)); floatText('+' + eur(res.x), r.left + 35, r.top); sfx('coin'); }
-  else if (res.kind === 'frenzy') { toast(res.x === 77 ? '💼 ЗЛАТНА ТРЕСКА!' : '💼 Пазарна треска!', 'Всички печалби ×' + res.x + ' за ' + res.sec + ' сек.'); sfx('big'); }
-  else { toast('💼 Диаманти!', '+💎 ' + res.x); sfx('gem'); }
+  if (res.kind === 'cash') { toast(tx('💼 Изгодна сделка!', '💼 Great deal!'), '+' + eur(res.x)); floatText('+' + eur(res.x), r.left + 35, r.top); sfx('coin'); }
+  else if (res.kind === 'frenzy') { toast(res.x === 77 ? tx('💼 ЗЛАТНА ТРЕСКА!', '💼 GOLD RUSH!') : tx('💼 Пазарна треска!', '💼 Market frenzy!'), tx('Всички печалби ×' + res.x + ' за ' + res.sec + ' сек.', 'All profits ×' + res.x + ' for ' + res.sec + ' s.')); sfx('big'); }
+  else { toast(tx('💼 Диаманти!', '💼 Diamonds!'), '+💎 ' + res.x); sfx('gem'); }
   confetti(40);
 }
 
@@ -841,10 +888,10 @@ function offline(sec) {
   var g = M.offlineGain(S, sec);
   if (!(g.cash > 0)) return;
   pendingOff += g.cash;
-  $('offText').textContent = 'Нямаше те ' + M.fmtTime(g.full) + '. Мениджърите работиха вместо теб.';
+  $('offText').textContent = tx('Нямаше те ' + M.fmtTime(g.full) + '. Мениджърите работиха вместо теб.', 'You were away for ' + M.fmtTime(g.full) + '. Your managers kept working.');
   $('offAmt').textContent = '+' + eur(pendingOff);
   var cap = $('offCap');
-  if (g.full > g.sec) { cap.hidden = false; cap.textContent = 'Мениджърите работят до ' + M.fmtTime(g.sec) + ' без теб. „Нощна смяна“ в Диаманти удължава времето.'; }
+  if (g.full > g.sec) { cap.hidden = false; cap.textContent = tx('Мениджърите работят до ' + M.fmtTime(g.sec) + ' без теб. „Нощна смяна“ в Диаманти удължава времето.', 'Managers work up to ' + M.fmtTime(g.sec) + ' without you. “Night Shift” in Diamonds extends this.'); }
   else cap.hidden = true;
   $('offDouble').disabled = S.dm < 3;
   $('modal').hidden = false;
@@ -866,12 +913,12 @@ function fast(now) {
   }
   // турбо и треска
   var tb = $('turbo');
-  if (now < S.tEnd) { tb.className = 'turbo on'; tb.textContent = '⚡ Турбо ×' + M.turboX(S) + ' · ' + Math.ceil((S.tEnd - now) / 1000) + ' сек'; tb.disabled = true; }
-  else if (now < S.tReady) { tb.className = 'turbo'; tb.textContent = '⚡ Турбо след ' + mmss((S.tReady - now) / 1000); tb.disabled = true; }
-  else { tb.className = 'turbo ready'; tb.textContent = '⚡ Турбо ×' + M.turboX(S); tb.disabled = false; }
+  if (now < S.tEnd) { tb.className = 'turbo on'; tb.textContent = tx('⚡ Турбо ×', '⚡ Turbo ×') + M.turboX(S) + ' · ' + Math.ceil((S.tEnd - now) / 1000) + tx(' сек', ' s'); tb.disabled = true; }
+  else if (now < S.tReady) { tb.className = 'turbo'; tb.textContent = tx('⚡ Турбо след ', '⚡ Turbo in ') + mmss((S.tReady - now) / 1000); tb.disabled = true; }
+  else { tb.className = 'turbo ready'; tb.textContent = tx('⚡ Турбо ×', '⚡ Turbo ×') + M.turboX(S); tb.disabled = false; }
   var bs = '';
-  if (now < S.tEnd) bs += '<span class="boost">ТУРБО ×' + M.turboX(S) + ' · ' + Math.ceil((S.tEnd - now) / 1000) + '</span>';
-  if (now < S.fEnd) bs += '<span class="boost">ТРЕСКА ×' + S.fX + ' · ' + Math.ceil((S.fEnd - now) / 1000) + '</span>';
+  if (now < S.tEnd) bs += '<span class="boost">' + tx('ТУРБО ×', 'TURBO ×') + M.turboX(S) + ' · ' + Math.ceil((S.tEnd - now) / 1000) + '</span>';
+  if (now < S.fEnd) bs += '<span class="boost">' + tx('ТРЕСКА ×', 'FRENZY ×') + S.fX + ' · ' + Math.ceil((S.fEnd - now) / 1000) + '</span>';
   if (bs !== ui.bs) { ui.bs = bs; $('boosts').innerHTML = bs; }
 }
 function mmss(sec) { sec = Math.ceil(sec); return Math.floor(sec / 60) + ':' + pad(sec % 60, 2); }
@@ -900,17 +947,17 @@ function renderCards(now) {
     var cost = M.costN(S, i, n);
     var can = cost <= S.cash;
     c.buy.disabled = !can;
-    setIf(c.buyN, 'n', locked ? 'Отключи' : 'Купи ×' + fmt(n));
+    setIf(c.buyN, 'n', locked ? tx('Отключи', 'Unlock') : tx('Купи ×', 'Buy ×') + fmt(n));
     setIf(c.buyC, 'c', eur(cost));
     // праг
-    if (locked) setIf(c.ms, 'm', 'Печели ' + eur(b.r) + ' на ' + secs(b.t), 'text');
-    else if (mi.next) setIf(c.ms, 'm', 'На <b>' + mi.next[0] + ' бр.</b> ' + msText(mi.next), 'html');
-    else setIf(c.ms, 'm', 'Всички прагове са взети', 'text');
+    if (locked) setIf(c.ms, 'm', tx('Печели ' + eur(b.r) + ' на ' + secs(b.t), 'Earns ' + eur(b.r) + ' every ' + secs(b.t)), 'text');
+    else if (mi.next) setIf(c.ms, 'm', tx('На <b>' + mi.next[0] + ' бр.</b> ', 'At <b>' + mi.next[0] + '</b>: ') + msText(mi.next), 'html');
+    else setIf(c.ms, 'm', tx('Всички прагове са взети', 'All milestones reached'), 'text');
     // мениджър
     var mg;
     if (locked) mg = '';
-    else if (S.mg[i]) mg = '<span class="ok" title="Мениджър: ' + esc(b.mn) + '">✓<span class="mn"> Работи сам</span></span>';
-    else mg = '<button data-act="hire" data-i="' + i + '"' + (S.cash < b.m ? ' disabled' : '') + ' title="' + esc(b.mn) + '">Наеми · ' + eur(b.m) + '</button>';
+    else if (S.mg[i]) mg = '<span class="ok" title="' + tx('Мениджър: ', 'Manager: ') + esc(b.mn) + '">✓<span class="mn">' + tx(' Работи сам', ' Automated') + '</span></span>';
+    else mg = '<button data-act="hire" data-i="' + i + '"' + (S.cash < b.m ? ' disabled' : '') + ' title="' + esc(b.mn) + '">' + tx('Наеми · ', 'Hire · ') + eur(b.m) + '</button>';
     setIf(c.mgr, 'g', mg, 'html');
     // лента
     if (locked) { setIf(c.rev, 'r', ''); c.tm.textContent = ''; c.fill.style.transform = 'scaleX(0)'; c.bar.classList.remove('flow'); continue; }
@@ -918,16 +965,17 @@ function renderCards(now) {
     var flow = ct < 0.3 && S.mg[i];
     c.bar.classList.toggle('flow', !!flow);
     if (flow) {
-      setIf(c.rev, 'r', '+' + eur(M.cycleRev(S, i) / ct * boost) + '/сек');
-      c.tm.textContent = 'поток';
+      setIf(c.rev, 'r', '+' + eur(M.cycleRev(S, i) / ct * boost) + tx('/сек', '/s'));
+      c.tm.textContent = tx('поток', 'stream');
     } else {
-      setIf(c.rev, 'r', (!S.mg[i] && !st.r && i === 0 && (O.hint0 || 0) < 3) ? 'Натисни лимоната ←' : '+' + eur(M.cycleRev(S, i) * boost));
+      setIf(c.rev, 'r', (!S.mg[i] && !st.r && i === 0 && (O.hint0 || 0) < 3) ? tx('Натисни лимоната ←', 'Tap the lemon ←') : '+' + eur(M.cycleRev(S, i) * boost));
     }
   }
   var hiddenN = fl < 0 ? 0 : NB - fl - 1;
   var te = $('teaser');
   te.hidden = hiddenN <= 0;
-  setIf(te, 't', 'Още ' + hiddenN + (hiddenN === 1 ? ' бизнес чака' : ' бизнеса чакат') + ' да ги откриеш. Следващият е още по-голям.');
+  setIf(te, 't', tx('Още ' + hiddenN + (hiddenN === 1 ? ' бизнес чака' : ' бизнеса чакат') + ' да ги откриеш. Следващият е още по-голям.',
+    hiddenN + (hiddenN === 1 ? ' more business is' : ' more businesses are') + ' waiting to be discovered. The next one is even bigger.'));
 }
 
 function renderMgr() {
@@ -935,8 +983,8 @@ function renderMgr() {
   M.BIZ.forEach(function (b, i) {
     var own = S.b[i].n > 0, got = S.mg[i];
     h += '<div class="item' + (got ? ' done' : own ? '' : ' lock') + '"><span class="ic">' + b.i + '</span><div><div class="t">' + esc(b.mn) + '</div><div class="d">' +
-      (own ? 'Управлява: ' + esc(b.n) : 'Първо отключи: ' + esc(b.n)) + '</div></div>' +
-      (got ? '<span class="stamp">НАЕТ</span>' : '<button class="price" data-act="hire" data-i="' + i + '"' + (!own || S.cash < b.m ? ' disabled' : '') + '>' + eur(b.m) + '</button>') + '</div>';
+      (own ? tx('Управлява: ', 'Runs: ') + esc(b.n) : tx('Първо отключи: ', 'First unlock: ') + esc(b.n)) + '</div></div>' +
+      (got ? '<span class="stamp">' + tx('НАЕТ', 'HIRED') + '</span>' : '<button class="price" data-act="hire" data-i="' + i + '"' + (!own || S.cash < b.m ? ' disabled' : '') + '>' + eur(b.m) + '</button>') + '</div>';
   });
   var any = M.BIZ.some(function (b, i) { return S.b[i].n && !S.mg[i] && S.cash >= b.m; });
   $('hireAll').disabled = !any;
@@ -948,12 +996,12 @@ function renderUps() {
     var b = u.b >= 0 ? M.BIZ[u.b] : null;
     var lockedBiz = b && !S.b[u.b].n;
     h += '<div class="item' + (lockedBiz ? ' lock' : '') + '"><span class="ic">' + (b ? b.i : '🏛️') + '</span><div><div class="t">' + esc(u.nm) + '</div><div class="d">' +
-      (b ? esc(b.n) : 'Всички бизнеси') + ' · <span class="x">печалба ×' + u.x + '</span></div></div>' +
+      (b ? esc(b.n) : tx('Всички бизнеси', 'All businesses')) + ' · <span class="x">' + tx('печалба ×', 'profit ×') + u.x + '</span></div></div>' +
       '<button class="price" data-act="up" data-id="' + u.id + '"' + (S.cash < u.c ? ' disabled' : '') + '>' + eur(u.c) + '</button></div>';
   });
-  if (!list.length) h = '<p class="note-line">Купил си всички подобрения. Истински магнат!</p>';
+  if (!list.length) h = '<p class="note-line">' + tx('Купил си всички подобрения. Истински магнат!', 'You bought every upgrade. A true tycoon!') + '</p>';
   $('upAll').disabled = !(list.length && S.cash >= list[0].c);
-  setIf($('upSub'), 's', 'Всяко подобрение утроява печалбата. Купени: ' + M.countUp(S) + ' от ' + M.UPG.length + '.' + (M.lvl(S, 'auto') ? ' Робот-счетоводителят купува сам.' : ''));
+  setIf($('upSub'), 's', tx('Всяко подобрение утроява печалбата. Купени: ', 'Each upgrade triples the profit. Bought: ') + M.countUp(S) + tx(' от ', ' of ') + M.UPG.length + '.' + (M.lvl(S, 'auto') ? tx(' Робот-счетоводителят купува сам.', ' The Robot Accountant buys them for you.') : ''));
   if (sigs.up !== h) { sigs.up = h; $('upList').innerHTML = h; }
 }
 function renderBorsa() {
@@ -961,36 +1009,36 @@ function renderBorsa() {
   var per = M.CFG.invBonus + 0.01 * M.lvl(S, 'inv');
   setIf($('bPct'), 'p', '+' + Math.round(per * 100) + '%');
   setIf($('bInv'), 'i', fmt(S.inv));
-  setIf($('bInvX'), 'x', 'печалба ×' + fmt(M.invMult(S)));
+  setIf($('bInvX'), 'x', tx('печалба ×', 'profit ×') + fmt(M.invMult(S)));
   setIf($('bGain'), 'g', '+' + fmt(gain));
   var after = 1 + (S.inv + gain) * per;
-  setIf($('bGainX'), 'a', gain ? 'печалбата става ×' + fmt(after) + ' (' + fmt(after / M.invMult(S)) + ' пъти повече)' : 'още няма какво да продадеш');
+  setIf($('bGainX'), 'a', gain ? tx('печалбата става ×' + fmt(after) + ' (' + fmt(after / M.invMult(S)) + ' пъти повече)', 'profit becomes ×' + fmt(after) + ' (' + fmt(after / M.invMult(S)) + '× more)') : tx('още няма какво да продадеш', 'nothing to sell yet'));
   var pot = Math.max(M.invPotential(S), S.inv);
   var L = function (p) { return Math.pow(p / M.CFG.invK, 3) * M.CFG.invBase; };
   var a = L(pot), b = L(pot + 1);
   var frac = Math.max(0, Math.min(1, (S.life - a) / (b - a)));
   $('bNextFill').style.width = (frac * 100).toFixed(1) + '%';
-  setIf($('bNext'), 'n', 'Още ' + eur(M.invNextAt(S)) + ' печалба. Общо спечелени досега: ' + eur(S.life) + '.');
+  setIf($('bNext'), 'n', tx('Още ' + eur(M.invNextAt(S)) + ' печалба. Общо спечелени досега: ' + eur(S.life) + '.', 'Earn ' + eur(M.invNextAt(S)) + ' more. Total earned so far: ' + eur(S.life) + '.'));
   var tip;
-  if (!gain) tip = 'Първият инвеститор идва, когато спечелиш общо ' + eur(L(1)) + '.';
-  else if (gain < Math.max(10, S.inv)) tip = 'Съвет: изчакай, докато инвеститорите поне се удвоят. Тогава скокът е голям.';
-  else tip = 'Сега е добър момент за продажба: печалбата ще скочи ' + fmt(after / M.invMult(S)) + ' пъти.';
+  if (!gain) tip = tx('Първият инвеститор идва, когато спечелиш общо ', 'Your first investor arrives once you have earned ') + eur(L(1)) + tx('.', ' in total.');
+  else if (gain < Math.max(10, S.inv)) tip = tx('Съвет: изчакай, докато инвеститорите поне се удвоят. Тогава скокът е голям.', 'Tip: wait until your investors at least double. Then the jump is big.');
+  else tip = tx('Сега е добър момент за продажба: печалбата ще скочи ' + fmt(after / M.invMult(S)) + ' пъти.', 'Now is a good time to sell: profit will jump ' + fmt(after / M.invMult(S)) + '×.');
   setIf($('bTip'), 't', tip);
   var btn = $('bBtn');
   btn.disabled = gain < 1;
-  if (btn.dataset.armed !== '1') setIf(btn, 'b', gain ? 'Продай империята за ' + fmt(gain) + ' инвеститори' : 'Продай империята');
+  if (btn.dataset.armed !== '1') setIf(btn, 'b', gain ? tx('Продай империята за ' + fmt(gain) + ' инвеститори', 'Sell the empire for ' + fmt(gain) + ' investors') : tx('Продай империята', 'Sell the empire'));
 }
 function renderDm() {
   var h = '';
   M.PERM.forEach(function (p) {
     var l = M.lvl(S, p.id), maxed = l >= p.max, c = maxed ? 0 : M.permCost(S, p.id);
     h += '<div class="item' + (maxed ? ' done' : '') + '"><span class="ic">💎</span><div><div class="t">' + esc(p.nm) + '</div><div class="d">' + esc(p.d) + '</div>' +
-      (p.max > 1 ? '<div class="x">Ниво ' + l + (p.max < 99 ? ' от ' + p.max : '') + '</div>' : '') + '</div>' +
-      (maxed ? '<span class="stamp">' + (p.max > 1 ? 'МАКС' : 'КУПЕНО') + '</span>' : '<button class="price" data-act="perm" data-id="' + p.id + '" data-nm="' + esc(p.nm) + '"' + (S.dm < c ? ' disabled' : '') + '>💎 ' + c + '</button>') + '</div>';
+      (p.max > 1 ? '<div class="x">' + tx('Ниво ', 'Level ') + l + (p.max < 99 ? tx(' от ', ' of ') + p.max : '') + '</div>' : '') + '</div>' +
+      (maxed ? '<span class="stamp">' + (p.max > 1 ? tx('МАКС', 'MAX') : tx('КУПЕНО', 'OWNED')) + '</span>' : '<button class="price" data-act="perm" data-id="' + p.id + '" data-nm="' + esc(p.nm) + '"' + (S.dm < c ? ' disabled' : '') + '>💎 ' + c + '</button>') + '</div>';
   });
   var ips = M.incomePerSec(S);
   M.WARPS.forEach(function (w) {
-    h += '<div class="item"><span class="ic">⏩</span><div><div class="t">Скок във времето · ' + w.h + ' ч</div><div class="d">Веднага получаваш ' + eur(ips * w.h * 3600) + '</div></div>' +
+    h += '<div class="item"><span class="ic">⏩</span><div><div class="t">' + tx('Скок във времето · ' + w.h + ' ч', 'Time warp · ' + w.h + ' h') + '</div><div class="d">' + tx('Веднага получаваш ', 'Instantly get ') + eur(ips * w.h * 3600) + '</div></div>' +
       '<button class="price" data-act="warp" data-id="' + w.id + '"' + (S.dm < w.cost || !ips ? ' disabled' : '') + '>💎 ' + w.cost + '</button></div>';
   });
   if (sigs.dm !== h) { sigs.dm = h; $('dmList').innerHTML = h; }
@@ -1001,28 +1049,32 @@ function renderAch() {
     var got = !!S.ach[a.id];
     h += '<div class="badge' + (got ? '' : ' off') + '"><span class="ic">' + a.ic + '</span><div><div class="t">' + esc(a.nm) + '</div><div class="d">' + esc(a.d) + ' · 💎 ' + a.dm + '</div></div></div>';
   });
-  setIf($('achSub'), 's', 'Взети: ' + n + ' от ' + M.ACH.length + '. Всяко дава +2% печалба завинаги (сега +' + Math.round(n * M.CFG.achBonus * 100) + '%) и диаманти.');
+  setIf($('achSub'), 's', tx('Взети: ' + n + ' от ' + M.ACH.length + '. Всяко дава +2% печалба завинаги (сега +' + Math.round(n * M.CFG.achBonus * 100) + '%) и диаманти.',
+    'Unlocked: ' + n + ' of ' + M.ACH.length + '. Each gives +2% profit forever (now +' + Math.round(n * M.CFG.achBonus * 100) + '%) and diamonds.'));
   if (sigs.ach !== h) { sigs.ach = h; $('achList').innerHTML = h; }
   O.seenAch = n;
 }
 function renderMore() {
+  var of = tx(' от ', ' of ');
   var rows = [
-    ['Пари сега', eur(S.cash)], ['Спечелени в тази игра', eur(S.run)], ['Спечелени общо', eur(S.life)],
-    ['Най-голяма печалба', eur(S.st.best) + '/сек'], ['Време в играта', M.fmtTime(S.st.play)],
-    ['Продажби на империята', fmt(S.st.pres)], ['Инвеститори', fmt(S.inv)], ['Бизнеси (бройки)', fmt(S.b.reduce(function (a, b) { return a + b.n; }, 0))],
-    ['Мениджъри', M.countMgr(S) + ' от ' + NB], ['Подобрения', M.countUp(S) + ' от ' + M.UPG.length], ['Постижения', S.$.ach + ' от ' + M.ACH.length],
-    ['Натискания', fmt(S.st.clicks)], ['Златни куфарчета', fmt(S.st.cases)], ['Турбо', fmt(S.st.turbos) + (S.st.turbos === 1 ? ' път' : ' пъти')],
-    ['Общ множител', '×' + fmt(M.globalMult(S))]
+    [tx('Пари сега', 'Cash now'), eur(S.cash)], [tx('Спечелени в тази игра', 'Earned this run'), eur(S.run)], [tx('Спечелени общо', 'Earned in total'), eur(S.life)],
+    [tx('Най-голяма печалба', 'Best income'), eur(S.st.best) + tx('/сек', '/s')], [tx('Време в играта', 'Time played'), M.fmtTime(S.st.play)],
+    [tx('Продажби на империята', 'Empire sales'), fmt(S.st.pres)], [tx('Инвеститори', 'Investors'), fmt(S.inv)], [tx('Бизнеси (бройки)', 'Business units'), fmt(S.b.reduce(function (a, b) { return a + b.n; }, 0))],
+    [tx('Мениджъри', 'Managers'), M.countMgr(S) + of + NB], [tx('Подобрения', 'Upgrades'), M.countUp(S) + of + M.UPG.length], [tx('Постижения', 'Achievements'), S.$.ach + of + M.ACH.length],
+    [tx('Натискания', 'Taps'), fmt(S.st.clicks)], [tx('Златни куфарчета', 'Golden briefcases'), fmt(S.st.cases)], [tx('Турбо', 'Turbo'), fmt(S.st.turbos) + tx(S.st.turbos === 1 ? ' път' : ' пъти', S.st.turbos === 1 ? ' time' : ' times')],
+    [tx('Общ множител', 'Total multiplier'), '×' + fmt(M.globalMult(S))]
   ];
   var h = rows.map(function (r) { return '<div><span>' + r[0] + '</span><b>' + r[1] + '</b></div>'; }).join('');
   if (sigs.more !== h) { sigs.more = h; $('stats').innerHTML = h; }
-  setIf($('soundBtn'), 's', 'Звук: ' + (O.sound ? 'включен' : 'изключен'));
+  setIf($('soundBtn'), 's', soundLabel());
+  setIf($('langBtn'), 'l', EN ? '🌐 Български' : '🌐 English');
 }
+function soundLabel() { return tx('Звук: ', 'Sound: ') + (O.sound ? tx('включен', 'on') : tx('изключен', 'off')); }
 
 function renderSlow(now, force) {
   if (!S) return;
   var ips = M.incomePerSec(S) * M.boostNow(S, now);
-  setIf($('ips'), 'i', '+' + eur(ips) + ' на секунда');
+  setIf($('ips'), 'i', '+' + eur(ips) + tx(' на секунда', ' per second'));
   setIf($('invChip'), 'v', S.inv ? fmt(S.inv) + ' · ×' + fmt(M.invMult(S)) : '×1');
   setIf($('dmChip'), 'd', fmt(S.dm));
   $('giftChip').hidden = !M.dailyReady(S, now);
@@ -1049,7 +1101,7 @@ function renderSlow(now, force) {
 function perSecond(now) {
   var got = M.checkAch(S);
   got.forEach(function (a, k) {
-    if (k < 3) toast('🏅 ' + a.nm, '+2% печалба завинаги и 💎 ' + a.dm);
+    if (k < 3) toast('🏅 ' + a.nm, tx('+2% печалба завинаги и 💎 ', '+2% profit forever and 💎 ') + a.dm);
   });
   if (got.length) { sfx('gem'); confetti(30); }
   if (M.lvl(S, 'auto')) M.buyAllUps(S);
@@ -1057,7 +1109,7 @@ function perSecond(now) {
   if (ips > S.st.best) S.st.best = ips;
   if (!O.hintMgr && !S.mg[0] && S.cash >= M.BIZ[0].m) {
     O.hintMgr = 1;
-    toast('👔 Наеми Малката Лили', 'Натисни „Наеми“ на лимонадата и тя ще продава вместо теб.');
+    toast(tx('👔 Наеми Малката Лили', '👔 Hire Little Lily'), tx('Натисни „Наеми“ на лимонадата и тя ще продава вместо теб.', 'Tap “Hire” on the lemonade stand and she will sell for you.'));
   }
   if (now - tickerT > 90000) { tickerT = now; renderTicker(); }
 }
@@ -1083,13 +1135,13 @@ var resizeT = 0;
 window.addEventListener('resize', function () { clearTimeout(resizeT); resizeT = setTimeout(function () { drawNote(); sizeConfetti(); }, 150); });
 document.addEventListener('visibilitychange', function () { if (document.hidden) persist(); });
 window.addEventListener('pagehide', persist); // iPhone може да затвори приложението без предупреждение
-window.addEventListener('pagehide', persist);
 
 function start(data) {
   var now = Date.now();
   O = Object.assign({ mode: 1, tab: 'biz', sound: true, seenAch: 0, hint0: 0 }, parse(lsGet(OKEY)) || {});
   var src = (data && data.s) || parse(lsGet(KEY));
   S = src ? M.load(src, now) : M.newState(now);
+  applyLang();
   build();
   var away = (now - S.last) / 1000;
   if (src && away > 30) offline(away);
