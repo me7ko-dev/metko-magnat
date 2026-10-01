@@ -9,8 +9,6 @@
 - **iPhone:** свържи телефона с Mac-а (кабел или същата Wi-Fi мрежа), отключи го и пусни `bash mobile/ios-install.sh`. С безплатен Apple акаунт работи 7 дни — после пак пусни командата (прогресът се пази).
 - **Windows програма:** иконата „Метко Магнат“ на работния плот (`release\MetkoMagnat-win32-x64\MetkoMagnat.exe`)
 - **Хранилище в GitHub:** https://github.com/me7ko-dev/metko-magnat
-- **Частно копие (Artifact):** https://claude.ai/artifact/VchcvHUQhobaNZviu6FxSM
-- **Папка на компютъра:** `C:\Users\roika\Projects\metko-magnat`
 - **Локално в браузъра:** двоен клик на `index.html`
 
 ## Как се пуска
